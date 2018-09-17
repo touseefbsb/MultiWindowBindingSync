@@ -35,22 +35,12 @@ namespace MultiWindowBindingSample.Services
             MainDispatcher = Window.Current.Dispatcher;
         }
 
-        // Displays a view as a standalone
-        // You can use the resulting ViewLifeTileControl to interact with the new window.
-        public async Task<ViewLifetimeControl> TryShowAsStandaloneAsync(string windowTitle, Type pageType)
-        {
-            ViewLifetimeControl viewControl = await CreateViewLifetimeControlAsync(windowTitle, pageType);
-            SecondaryViews.Add(viewControl);
-            viewControl.StartViewInUse();
-            var viewShown = await ApplicationViewSwitcher.TryShowAsStandaloneAsync(viewControl.Id, ViewSizePreference.Default, ApplicationView.GetForCurrentView().Id, ViewSizePreference.Default);
-            viewControl.StopViewInUse();
-            return viewControl;
-        }
+       
 
         // Displays a view in the specified view mode
-        public async Task<ViewLifetimeControl> TryShowAsViewModeAsync(string windowTitle, Type pageType, Note note,ApplicationViewMode viewMode = ApplicationViewMode.Default)
+        public async Task<ViewLifetimeControl> TryShowAsViewModeAsync(string windowTitle, Type pageType, Note note, ApplicationViewMode viewMode = ApplicationViewMode.Default)
         {
-            ViewLifetimeControl viewControl = await CreateViewLifetimeControlAsync(windowTitle, pageType);
+            ViewLifetimeControl viewControl = await CreateViewLifetimeControlAsync(windowTitle, note, pageType);
             SecondaryViews.Add(viewControl);
             viewControl.StartViewInUse();
             var viewShown = await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewControl.Id, viewMode);
@@ -58,7 +48,7 @@ namespace MultiWindowBindingSample.Services
             return viewControl;
         }
 
-        private async Task<ViewLifetimeControl> CreateViewLifetimeControlAsync(string windowTitle, Type pageType)
+        private async Task<ViewLifetimeControl> CreateViewLifetimeControlAsync(string windowTitle, Note note, Type pageType)
         {
             ViewLifetimeControl viewControl = null;
 
@@ -69,7 +59,8 @@ namespace MultiWindowBindingSample.Services
                 viewControl.StartViewInUse();
                 var frame = new Frame();
                 frame.RequestedTheme = ThemeSelectorService.Theme;
-                frame.Navigate(pageType, viewControl);
+                var t = Tuple.Create<Note, ViewLifetimeControl>(note, viewControl);
+                frame.Navigate(pageType, t);
                 Window.Current.Content = frame;
                 Window.Current.Activate();
                 ApplicationView.GetForCurrentView().Title = viewControl.Title;
