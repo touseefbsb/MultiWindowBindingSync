@@ -22,7 +22,7 @@
             Grid.Row="1" 
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <TextBox Text="{x:Bind ViewModel.MyNote.Description, Mode=TwoWay}"
-                     />
+                     x:Name="PipBox"/>
         </Grid>
     </Grid>
 </Page>
