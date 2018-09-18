@@ -13,6 +13,6 @@ namespace MultiWindowBindingSample.Models
             set => Set(ref _description, value, nameof(Description));
         }
         public Note THIS => this;
-        
+
     }
 }

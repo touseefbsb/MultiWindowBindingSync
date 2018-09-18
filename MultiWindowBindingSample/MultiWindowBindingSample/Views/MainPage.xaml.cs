@@ -5,7 +5,7 @@ using MultiWindowBindingSample.Services;
 using MultiWindowBindingSample.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+using Microsoft.Toolkit.Uwp.UI.Extensions;
 namespace MultiWindowBindingSample.Views
 {
     public sealed partial class MainPage : Page
@@ -19,10 +19,14 @@ namespace MultiWindowBindingSample.Views
 
         private async void OpenInNewWindowButtonClick(object sender, RoutedEventArgs e)
         {
-            var note = (Note)((Button)sender).DataContext;
+            var button = sender as Button;
+            var note = button.DataContext as Note;
+            var stack = button.FindParent<StackPanel>();
+            var box = stack.FindChild<TextBox>();
             //open note in secondary window
             await WindowManagerService.Current
-                .TryShowAsViewModeAsync("AppDisplayName".GetLocalized(), typeof(PipNotePage), note);
+                .TryShowAsViewModeAsync("AppDisplayName".GetLocalized(), typeof(PipNotePage),
+                new Note { Id = note.Id, Description = note.Description }, box);
 
         }
     }

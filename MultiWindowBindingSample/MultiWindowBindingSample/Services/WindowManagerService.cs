@@ -35,12 +35,12 @@ namespace MultiWindowBindingSample.Services
             MainDispatcher = Window.Current.Dispatcher;
         }
 
-       
+
 
         // Displays a view in the specified view mode
-        public async Task<ViewLifetimeControl> TryShowAsViewModeAsync(string windowTitle, Type pageType, Note note, ApplicationViewMode viewMode = ApplicationViewMode.Default)
+        public async Task<ViewLifetimeControl> TryShowAsViewModeAsync(string windowTitle, Type pageType, Note note, TextBox box, ApplicationViewMode viewMode = ApplicationViewMode.Default)
         {
-            ViewLifetimeControl viewControl = await CreateViewLifetimeControlAsync(windowTitle, note, pageType);
+            ViewLifetimeControl viewControl = await CreateViewLifetimeControlAsync(windowTitle, note, box, pageType);
             SecondaryViews.Add(viewControl);
             viewControl.StartViewInUse();
             var viewShown = await ApplicationViewSwitcher.TryShowAsViewModeAsync(viewControl.Id, viewMode);
@@ -48,7 +48,7 @@ namespace MultiWindowBindingSample.Services
             return viewControl;
         }
 
-        private async Task<ViewLifetimeControl> CreateViewLifetimeControlAsync(string windowTitle, Note note, Type pageType)
+        private async Task<ViewLifetimeControl> CreateViewLifetimeControlAsync(string windowTitle, Note note, TextBox box, Type pageType)
         {
             ViewLifetimeControl viewControl = null;
 
@@ -59,7 +59,7 @@ namespace MultiWindowBindingSample.Services
                 viewControl.StartViewInUse();
                 var frame = new Frame();
                 frame.RequestedTheme = ThemeSelectorService.Theme;
-                var t = Tuple.Create<Note, ViewLifetimeControl>(note, viewControl);
+                var t = Tuple.Create(note, viewControl, box);
                 frame.Navigate(pageType, t);
                 Window.Current.Content = frame;
                 Window.Current.Activate();
